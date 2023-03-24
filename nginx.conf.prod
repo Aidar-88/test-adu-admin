@@ -1,0 +1,26 @@
+server{
+  listen 80;
+  server_name admin.adu24.com;
+
+  location ~ /.well-known/acme-challenge {
+           allow all;
+           root /var/www/html;
+       }
+
+  return 301 https://admin.adu24.com$request_uri;
+}
+
+
+server {
+   listen 443 ssl http2;
+   listen [::]:443  ssl http2;
+   server_name admin.adu24.com;
+
+   server_tokens off;
+   ssl_certificate /etc/letsencrypt/live/admin.adu24.com/fullchain.pem;
+   ssl_certificate_key /etc/letsencrypt/live/admin.adu24.com/privkey.pem;
+
+   location / {
+       proxy_pass http://client:3000;
+   }
+}
